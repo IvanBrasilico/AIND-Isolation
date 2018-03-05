@@ -143,7 +143,7 @@ def main():
         Agent(MinimaxPlayer(score_fn=improved_score), "MM_Improved"),
         Agent(AlphaBetaPlayer(score_fn=open_move_score), "AB_Open"),
         Agent(AlphaBetaPlayer(score_fn=center_score), "AB_Center"),
-        Agent(AlphaBetaPlayer(score_fn=improved_score), "AB_Improved")
+        Agent(AlphaBetaPlayer(score_fn=improved_score), "AB_Improved"),
     ]
 
     print(DESCRIPTION)

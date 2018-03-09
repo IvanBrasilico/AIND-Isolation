@@ -21,7 +21,6 @@ from isolation import Board
 from sample_players import (RandomPlayer, open_move_score,
                             improved_score, center_score)
 from game_agent import (MinimaxPlayer, AlphaBetaPlayer,
-                        AlphaBetaLastLevelPlayer,
                         custom_score, custom_score_2, custom_score_3)
 
 NUM_MATCHES = 5  # number of matches against each opponent
@@ -145,13 +144,11 @@ def main():
         Agent(MinimaxPlayer(score_fn=open_move_score), "MM_Open"),
         Agent(MinimaxPlayer(score_fn=center_score), "MM_Center"),
         Agent(MinimaxPlayer(score_fn=improved_score), "MM_Improved"),
+        Agent(MinimaxPlayer(score_fn=custom_score_3,
+         evaluate_timeout=True), "MM_Turbo_CS3"),
         Agent(AlphaBetaPlayer(score_fn=open_move_score), "AB_Open"),
         Agent(AlphaBetaPlayer(score_fn=center_score), "AB_Center"),
         Agent(AlphaBetaPlayer(score_fn=improved_score), "AB_Improved"),
-#        Agent(AlphaBetaLastLevelPlayer(score_fn=custom_score), "ABLL_Custom"),
-#        Agent(AlphaBetaLastLevelPlayer(score_fn=open_move_score), "ABLL_Open"),
-#        Agent(AlphaBetaLastLevelPlayer(score_fn=center_score), "ABLL_Center"),
-#        Agent(AlphaBetaLastLevelPlayer(score_fn=improved_score), "ABLL_Improved"),
     ]
 
     print(DESCRIPTION)

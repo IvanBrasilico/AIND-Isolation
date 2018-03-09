@@ -112,8 +112,8 @@ def custom_score_3(game, player):
         The heuristic value of the current game state to the specified player.
     """
     if len(game.get_blank_spaces()) / (game.width * game.height) > 0.2:
-        return custom_score(game, player)
-    return custom_score_2(game, player)
+        return custom_score_2(game, player)
+    return custom_score(game, player)
 
 class IsolationPlayer:
     """Base class for minimax and alphabeta agents -- this class is never
@@ -138,11 +138,13 @@ class IsolationPlayer:
         timer expires.
     """
 
-    def __init__(self, search_depth=3, score_fn=custom_score, timeout=10.):
+    def __init__(self, search_depth=3, score_fn=custom_score, timeout=10.,
+                 evaluate_timeout=False):
         self.search_depth = search_depth
         self.score = score_fn
         self.time_left = None
         self.TIMER_THRESHOLD = timeout
+        self.evaluate_timeout = evaluate_timeout
 
 
 class MinimaxPlayer(IsolationPlayer):
@@ -185,20 +187,20 @@ class MinimaxPlayer(IsolationPlayer):
         # Initialize the best move so that this function returns something
         # in case the search fails due to timeout
         best_move = (-1, -1)
-        """actual_moves = []
-        for move in game.get_legal_moves():
-            new_game = game.forecast_move(move)
-            score = self.score(new_game, new_game.active_player)
-            actual_moves.append((move, score))
-        if actual_moves:
-            actual_moves.sort(key=itemgetter(1))
-            return actual_moves[-1][0]
-        """
         try:
             return self.minimax(game, self.search_depth)
         except SearchTimeout:
             # print("TIMEOUT!!")
-            pass
+            if self.evaluate_timeout:
+                actual_moves = []
+                game = self.last_level
+                for move in game.get_legal_moves():
+                    new_game = game.forecast_move(move)
+                    score = self.score(new_game, new_game.active_player)
+                    actual_moves.append((move, score))
+                if actual_moves:
+                    actual_moves.sort(key=itemgetter(1))
+                    return actual_moves[-1][0]
 
         return best_move
 
@@ -274,7 +276,7 @@ class MinimaxPlayer(IsolationPlayer):
         nodes.
         """
         if self.terminal_test(game, depth):
-            return self.score(game, game.active_player)
+            return 1
 
         # If max_depth or timeout is achieved on next iters, save last
         # level searched to evaluate (ID)
@@ -291,7 +293,7 @@ class MinimaxPlayer(IsolationPlayer):
         nodes.
         """
         if self.terminal_test(game, depth):
-            return -self.score(game, game.active_player)
+            return -1
 
         # If max_depth or timeout is achieved on next iters, save last
         # level searched to evaluate (ID)
@@ -416,19 +418,12 @@ class AlphaBetaPlayer(IsolationPlayer):
                 bestmove = move
         return bestmove
 
-    def terminal_test(self, game, depth):
+    def terminal_test(self, game):
         """ Return True if the game is over for the active player
         and False otherwise.
         """
         if self.time_left() < self.TIMER_THRESHOLD:
             raise SearchTimeout()
-
-        # If max_depth or timeout is achieved on next iters, save last
-        # level searched to evaluate (ID)
-        self.last_level = game
-
-        if depth <= 0:
-            return True
 
         return not bool(game.get_legal_moves())
 
@@ -437,12 +432,12 @@ class AlphaBetaPlayer(IsolationPlayer):
         otherwise return the minimum value over all legal child
         nodes.
         """
-        if self.terminal_test(game, depth):
-            return self.score(game, game.active_player)
+        if self.terminal_test(game):
+            return 1
 
-        # If max_depth or timeout is achieved on next iters, save last
-        # level searched to evaluate (ID)
-        self.last_level = game
+
+        if depth <= 0:
+            return self.score(game, game.active_player)
 
         v = float("inf")
         for m in game.get_legal_moves():
@@ -457,8 +452,11 @@ class AlphaBetaPlayer(IsolationPlayer):
         otherwise return the maximum value over all legal child
         nodes.
         """
-        if self.terminal_test(game, depth):
-            return -self.score(game, game.active_player)
+        if self.terminal_test(game):
+            return -1
+
+        if depth <= 0:
+            return self.score(game, game.active_player)
 
         v = float("-inf")
         for m in game.get_legal_moves():

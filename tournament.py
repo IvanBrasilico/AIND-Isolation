@@ -84,10 +84,10 @@ def play_matches(cpu_agents, test_agents, num_matches):
     total_forfeits = 0.
     total_matches = 2 * num_matches * len(cpu_agents)
 
-    print("\n{:^9}{:^13}".format("Match #", "Opponent") +
+    print("\n{:^9}{:^13}".format("Match #", "CPU - TEST") +
           ''.join(['{:^13}'.format(x[1].name) for x in enumerate(test_agents)]))
     print("{:^9}{:^13} ".format("", "") +
-          ' '.join(['{:^5}| {:^5}'.format("Won", "Lost") for x in enumerate(test_agents)]))
+          ' '.join(['{:^5}| {:^5}'.format("TEST", "CPU") for x in enumerate(test_agents)]))
 
     for idx, agent in enumerate(cpu_agents):
         wins = {key: 0 for (key, value) in test_agents}
@@ -132,6 +132,7 @@ def main():
     # Define two agents to compare -- these agents will play from the same
     # starting position against the same adversaries in the tournament
     test_agents = [
+        Agent(RandomPlayer(), "Random"),
         Agent(AlphaBetaPlayer(score_fn=improved_score), "AB_Improved"),
         Agent(AlphaBetaPlayer(score_fn=custom_score), "AB_Custom"),
         Agent(AlphaBetaPlayer(score_fn=custom_score_2), "AB_Custom_2"),
@@ -145,7 +146,7 @@ def main():
         Agent(MinimaxPlayer(score_fn=center_score), "MM_Center"),
         Agent(MinimaxPlayer(score_fn=improved_score), "MM_Improved"),
         Agent(MinimaxPlayer(score_fn=custom_score_3,
-         evaluate_timeout=True), "MM_Turbo_CS3"),
+         evaluate_timeout=True), "MM_evtm_CS3"),
         Agent(AlphaBetaPlayer(score_fn=open_move_score), "AB_Open"),
         Agent(AlphaBetaPlayer(score_fn=center_score), "AB_Center"),
         Agent(AlphaBetaPlayer(score_fn=improved_score), "AB_Improved"),

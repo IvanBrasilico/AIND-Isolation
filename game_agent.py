@@ -111,9 +111,9 @@ def custom_score_3(game, player):
     float
         The heuristic value of the current game state to the specified player.
     """
-    if len(game.get_blank_spaces()) / (game.width * game.height) > 0.2:
-        return custom_score_2(game, player)
-    return custom_score(game, player)
+    if len(game.get_blank_spaces()) / (game.width * game.height) > 0.4:
+        return custom_score(game, player)
+    return custom_score_2(game, player)
 
 class IsolationPlayer:
     """Base class for minimax and alphabeta agents -- this class is never
@@ -444,7 +444,7 @@ class AlphaBetaPlayer(IsolationPlayer):
             v = min(v, self.max_value(game.forecast_move(m), alpha, beta, depth - 1))
             if v <= alpha:
                 return v
-            alpha = max(alpha, v)
+            beta = min(beta, v)
         return v
 
     def max_value(self, game, alpha, beta, depth):
@@ -460,5 +460,5 @@ class AlphaBetaPlayer(IsolationPlayer):
             v = max(v, self.min_value(game.forecast_move(m), alpha, beta, depth - 1))
             if v >= beta:
                 return v
-            beta = min(beta, v)
+            alpha = max(alpha, v)
         return v

@@ -111,9 +111,9 @@ def custom_score_3(game, player):
     float
         The heuristic value of the current game state to the specified player.
     """
-    if len(game.get_blank_spaces()) / (game.width * game.height) > 0.4:
-        return custom_score(game, player)
-    return custom_score_2(game, player)
+    if len(game.get_blank_spaces()) / (game.width * game.height) > 0.2:
+        return custom_score_2(game, player)
+    return custom_score(game, player)
 
 class IsolationPlayer:
     """Base class for minimax and alphabeta agents -- this class is never

@@ -10,7 +10,7 @@ class SearchTimeout(Exception):
     """Subclass base exception for code clarity. """
     pass
 
-def custom_score(game, player):
+def custom_score_center(game, player):
     """Calculate the heuristic value of a game state from the point of view
     of the given player.
 
@@ -48,7 +48,44 @@ def custom_score(game, player):
     y, x = game.get_player_location(player)
     dist_x = abs(h - x)
     dist_y = abs(w - y)
-    return float((my_moves - op_moves) / ((dist_x + dist_y) * 2))
+    return float((my_moves - 2 * op_moves) / ((dist_x + dist_y) * 2))
+
+
+def custom_score(game, player):
+    """Calculate the heuristic value of a game state from the point of view
+    of the given player.
+
+    This should be the best heuristic function for your project submission.
+
+    Note: this function should be called from within a Player instance as
+    `self.score()` -- you should not need to call this function directly.
+
+    Parameters
+    ----------
+    game : `isolation.Board`
+        An instance of `isolation.Board` encoding the current state of the
+        game (e.g., player locations and blocked cells).
+
+    player : object
+        A player instance in the current game (i.e., an object corresponding to
+        one of the player objects `game.__player_1__` or `game.__player_2__`.)
+
+    Returns
+    -------
+    float
+        The heuristic value of the current game state to the specified player.
+    """
+    # Returns actual player number of moves minus opponent number of moves
+    # divided by distance of center. 
+    if game.is_loser(player):
+        return float("-inf")
+
+    if game.is_winner(player):
+        return float("inf")
+
+    my_moves = len(game.get_legal_moves())
+    op_moves = len(game.get_legal_moves(game.get_opponent(player)))
+    return float(my_moves - 2 * op_moves)
 
 
 def custom_score_2(game, player):
@@ -86,7 +123,7 @@ def custom_score_2(game, player):
     y, x = game.get_player_location(player)
     dist_x = abs(h - x)
     dist_y = abs(w - y)
-    return float((my_moves - op_moves) / ((dist_x + dist_y) * 2))
+    return float((my_moves - 2 * op_moves) / ((dist_x + dist_y) * 2))
 
 
 def custom_score_3(game, player):
@@ -111,7 +148,7 @@ def custom_score_3(game, player):
     float
         The heuristic value of the current game state to the specified player.
     """
-    if len(game.get_blank_spaces()) / (game.width * game.height) > 0.2:
+    if len(game.get_blank_spaces()) / (game.width * game.height) > 0.6:
         return custom_score_2(game, player)
     return custom_score(game, player)
 

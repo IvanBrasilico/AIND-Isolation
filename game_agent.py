@@ -75,8 +75,8 @@ def custom_score(game, player):
     float
         The heuristic value of the current game state to the specified player.
     """
-    # Returns actual player number of moves minus opponent number of moves
-    # divided by distance of center. 
+    # Returns actual player number of moves minus 
+    # 2 times opponent number of moves
     if game.is_loser(player):
         return float("-inf")
 
@@ -110,7 +110,8 @@ def custom_score_2(game, player):
     float
         The heuristic value of the current game state to the specified player.
     """
-    # Returns opponent number of moves minus actual player number of moves
+    # Returns actual player number of moves minus 
+    # 2 times opponent number of moves
     # divided by distance of oponent. 
     if game.is_loser(player):
         return float("-inf")
